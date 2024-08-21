@@ -1,8 +1,11 @@
 import Config
 
+session_cookie = System.get_env("AOC_SESSION")
+IO.inspect(session_cookie)
+
 config :advent_of_code, AdventOfCode.Input,
-  # allow_network?: true,
-  session_cookie: System.get_env("ADVENT_OF_CODE_SESSION_COOKIE")
+  allow_network?: true,
+  session_cookie: session_cookie
 
 # If you don't like environment variables, put your cookie in
 # a `config/secrets.exs` file like this:
