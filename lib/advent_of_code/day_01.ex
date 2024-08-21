@@ -13,7 +13,7 @@ defmodule AdventOfCode.Day01 do
     |> Enum.sum
   end
 
-  def parse_calibration(text) do
+  defp parse_calibration(text) do
     first = Regex.run(~r/(\d{1})/, text, capture: :first)
       |> hd
       |> String.to_integer
@@ -23,7 +23,7 @@ defmodule AdventOfCode.Day01 do
     first * 10 + last
   end
 
-  def parse_calibration_with_spelled_numbers(text) do
+  defp parse_calibration_with_spelled_numbers(text) do
     first = Regex.run(~r/^.*?([0-9]|one|two|three|four|five|six|seven|eight|nine)/, text, capture: :all_but_first)
       |> hd
       |> parse_number
@@ -33,14 +33,9 @@ defmodule AdventOfCode.Day01 do
     first * 10 + last
   end
 
-  def parse_number(text) do
-    case Integer.parse(text) do
-      :error -> parse_spelled_number(text)
-      {num, _} -> num
-    end
-  end
+  defp parse_number(text) when text in ~w(1 2 3 4 5 6 7 8 9 0), do: String.to_integer(text)
 
-  def parse_spelled_number(text) do
+  defp parse_number(text) do
     case text do
       "one" -> 1
       "two" -> 2
@@ -51,7 +46,8 @@ defmodule AdventOfCode.Day01 do
       "seven" -> 7
       "eight" -> 8
       "nine" -> 9
-      _ -> 0
+      "zero" -> 0
+      _ -> raise "Invalid number"
     end
   end
 end
