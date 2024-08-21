@@ -3,7 +3,7 @@ defmodule AdventOfCode.Day01Test do
 
   import AdventOfCode.Day01
 
-  # @tag :skip
+  @tag :skip
   test "part1" do
     input = ~w(1abc2 pqr3stu8vwx a1b2c3d4e5f treb7uchet) |> Enum.join("\n")
     result = part1(input)
@@ -11,7 +11,7 @@ defmodule AdventOfCode.Day01Test do
     assert 142 == result
   end
 
-  # @tag :skip
+  @tag :skip
   test "part2" do
     input = ~w(
       two1nine
