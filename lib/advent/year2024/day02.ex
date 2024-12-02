@@ -42,9 +42,12 @@ defmodule Advent.Year2024.Day02 do
     end
   end
 
+  defp check(report, problem_dampener: false) do
+    check(report)
+  end
+
   defp check(report, problem_dampener: true) do
-    report
-    |> check()
+    check(report)
     |> case do
       nil ->
         report

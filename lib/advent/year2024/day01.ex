@@ -1,12 +1,12 @@
 defmodule Advent.Year2024.Day01 do
-  def part1(args) do
-    {list1, list2} = extract_list(args)
+  def part1(input) do
+    {list1, list2} = extract_list(input)
 
     list1 = Enum.sort(list1)
     list2 = Enum.sort(list2)
 
     Enum.zip(list1, list2)
-    |> Enum.reduce(0, &(&2 + abs(elem(&1, 0) - elem(&1, 1))))
+    |> Enum.reduce(0, fn {a, b}, acc -> acc + abs(a - b) end )
   end
 
   def part2(args) do
