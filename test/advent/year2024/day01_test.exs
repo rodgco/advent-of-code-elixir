@@ -1,8 +1,10 @@
 defmodule Advent.Year2024.Day01Test do
   use ExUnit.Case
   import Elixir.Advent.Year2024.Day01
+  @moduletag :"y2024.d01"
+  @moduletag :y2024
 
-  @tag :skip
+  @tag :"y2024.d01.p1"
   test "part1" do
     input = "3   4
 4   3
@@ -15,7 +17,7 @@ defmodule Advent.Year2024.Day01Test do
     assert 11 === result
   end
 
-  @tag :skip
+  @tag :"y2024.d01.p2"
   test "part2" do
     input = "3   4
 4   3
