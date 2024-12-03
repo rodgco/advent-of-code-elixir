@@ -6,7 +6,7 @@ defmodule Advent.Year2024.Day01 do
     list2 = Enum.sort(list2)
 
     Enum.zip(list1, list2)
-    |> Enum.reduce(0, fn {a, b}, acc -> acc + abs(a - b) end )
+    |> Enum.reduce(0, fn {a, b}, acc -> acc + abs(a - b) end)
   end
 
   def part2(args) do
