@@ -1,23 +1,23 @@
 defmodule Advent.Year2024.Day02 do
-  def part1(args) do
-    args
-    |> extract_list()
+  def part1(input) do
+    input
+    |> process_input()
     # Check all the reports
     |> Enum.map(fn report -> is_safe?(report) end)
     # Count safe projects
-    |> Enum.count(fn report_status -> report_status === true end)
+    |> Enum.count(fn is_safe -> is_safe === true end)
   end
 
-  def part2(args) do
-    args
-    |> extract_list()
+  def part2(input) do
+    input
+    |> process_input()
     # Check all the reports, with Probelm Dampener activated
     |> Enum.map(fn report -> is_safe?(report, problem_dampener: true) end)
     # Count safe projects
-    |> Enum.count(fn report_status -> report_status === true end)
+    |> Enum.count(fn is_safe -> is_safe === true end)
   end
 
-  defp extract_list(list) do
+  defp process_input(list) do
     list
     |> String.split("\n", trim: true)
     |> Enum.map(fn line -> split_and_convert_entry(line) end)
