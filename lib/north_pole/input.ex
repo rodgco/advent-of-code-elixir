@@ -1,5 +1,5 @@
-defmodule NorthPole.InputHelper do
-  def input_to_list(input) do
+defmodule Input do
+  def to_list(input) do
     input
     |> String.split("\n", trim: true)
   end
@@ -24,7 +24,7 @@ defmodule NorthPole.InputHelper do
 
   """
   def convert_item(item, types \\ []) do
-    [ item, types ]
+    [item, types]
     |> Enum.zip()
     |> Enum.map(fn {value, type} ->
       case type do

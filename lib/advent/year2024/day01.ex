@@ -1,6 +1,4 @@
 defmodule Advent.Year2024.Day01 do
-  import NorthPole.InputHelper
-
   def part1(input) do
     {list1, list2} = extract_list(input)
 
@@ -21,9 +19,9 @@ defmodule Advent.Year2024.Day01 do
 
   defp extract_list(list) do
     list
-    |> input_to_list()
-    |> split_items(" ", trim: true)
-    |> convert_items([:integer, :integer])
+    |> Input.to_list()
+    |> Input.split_items(" ", trim: true)
+    |> Input.convert_items([:integer, :integer])
     |> Stream.map(&List.to_tuple(&1))
     |> Enum.unzip()
   end
