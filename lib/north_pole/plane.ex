@@ -15,7 +15,7 @@ defmodule Plane do
   def scan(plane, char, default, fun) do
     for y <- 1..(plane.height - 2), x <- 1..(plane.width - 2) do
       if at(plane, x, y) === char do
-        fun.(x, y)
+        fun.(plane, x, y)
       else
         default
       end
@@ -33,11 +33,22 @@ defmodule Plane do
     end
   end
 
-  def rotate(plane, 0) do
+  def rotate(plane, rotation, fun) do
+    do_rotate(plane, rotation)
+    |> Tuple.to_list()
+    |> Enum.map(fn line ->
+      Tuple.to_list(line)
+      |> Enum.map(&Atom.to_string(&1))
+      |> List.to_string()
+      |> fun.()
+    end)
+  end
+
+  def do_rotate(plane, 0) do
     plane.data
   end
 
-  def rotate(plane, 45) do
+  def do_rotate(plane, 1) do
     diagonals = plane.width + plane.height - 1
 
     for d <- 0..(diagonals - 1), reduce: {} do
@@ -54,7 +65,7 @@ defmodule Plane do
     end
   end
 
-  def rotate(plane, 90) do
+  def do_rotate(plane, 2) do
     for x <- 0..(plane.height - 1), reduce: {} do
       acc ->
         Tuple.append(
@@ -66,14 +77,14 @@ defmodule Plane do
     end
   end
 
-  def rotate(plane, 135) do
-    Plane.rotate(
-      new(Plane.rotate(plane, 90)),
-      45
+  def do_rotate(plane, 3) do
+    Plane.do_rotate(
+      new(Plane.do_rotate(plane, 2)),
+      1
     )
   end
 
-  def rotate(plane, 180) do
+  def do_rotate(plane, 4) do
     for y <- (plane.height - 1)..0//-1, reduce: {} do
       acc ->
         Tuple.append(
@@ -85,7 +96,7 @@ defmodule Plane do
     end
   end
 
-  def rotate(plane, 225) do
+  def do_rotate(plane, 5) do
     diagonals = plane.width + plane.height - 1
 
     for d <- (diagonals - 1)..0//-1, reduce: {} do
@@ -102,7 +113,7 @@ defmodule Plane do
     end
   end
 
-  def rotate(plane, 270) do
+  def do_rotate(plane, 6) do
     for x <- (plane.height - 1)..0//-1, reduce: {} do
       acc ->
         Tuple.append(
@@ -114,10 +125,10 @@ defmodule Plane do
     end
   end
 
-  def rotate(plane, 315) do
-    Plane.rotate(
-      new(Plane.rotate(plane, 270)),
-      45
+  def do_rotate(plane, 7) do
+    Plane.do_rotate(
+      new(Plane.do_rotate(plane, 6)),
+      1
     )
   end
 end

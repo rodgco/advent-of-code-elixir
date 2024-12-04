@@ -25,6 +25,13 @@ defmodule Input do
     |> List.to_tuple()
   end
 
+  def to_tupples(input, fun) do
+    input
+    |> String.split("\n", trim: true)
+    |> Enum.map(&fun.(&1))
+    |> List.to_tuple()
+  end
+
   @doc ~S"""
   Given a list of items and a list of types, convert each item to the respective type.
 
