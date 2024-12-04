@@ -38,21 +38,22 @@ defmodule Advent.Year2024.Day02 do
         report
       end
 
-    {status, _} = report
     # Start the analysis with a number below the first one in the report (safe)
-    |> Enum.reduce({true, List.first(report) - 1}, fn
-      _value, {false, _last} ->
-        {false, nil}
+    {status, _} =
+      report
+      |> Enum.reduce({true, List.first(report) - 1}, fn
+        _value, {false, _last} ->
+          {false, nil}
 
-      value, {true, last} ->
-        case value - last do
-          x when x in 1..3 ->
-            {true, value}
+        value, {true, last} ->
+          case value - last do
+            x when x in 1..3 ->
+              {true, value}
 
-          _ ->
-            {false, value}
-        end
-    end)
+            _ ->
+              {false, value}
+          end
+      end)
 
     status
   end
