@@ -1,5 +1,15 @@
 defmodule NorthPole.Computer do
   defmodule Tokenizer do
+    @doc ~S"""
+    Parses a raw instruction, like `"mul(12,10)"` into a tokenized list, following the hardcoded
+    specs.
+
+    ## Examples
+
+      iex> NorthPole.Computer.Tokenizer.tokenize("mul(12,10)")
+      [:mul, 12, 10]
+
+    """
     def tokenize(instruction) do
       [token | params] = Regex.split(~r/,|\(|\)/, instruction, trim: true)
 
@@ -38,6 +48,35 @@ defmodule NorthPole.Computer do
     }
   end
 
+  @doc ~S"""
+  Runs the loaded instruction against the state.
+
+  Some instructions alter the value stored, like `[:mul, 10, 12]`, while others alter the state
+  behavior, like `[:do]` and `[:"don't"]`, that enables and disables the execution of the following
+  instructions.
+
+  The instruction is cleared after running.
+
+  ## Examples
+
+    iex> NorthPole.Computer.run(%{ instruction: [:mul, 12, 10], enabled: true, value: 10 })
+    %{ instruction: nil, enabled: true, value: 130 }
+
+    iex> NorthPole.Computer.run(%{ instruction: [:mul, 12, 10], enabled: false, value: 10 })
+    %{ instruction: nil, enabled: false, value: 10 }
+
+    iex> NorthPole.Computer.run(%{ instruction: [:do], enabled: true, value: 10 })
+    %{ instruction: nil, enabled: true, value: 10 }
+
+    iex> NorthPole.Computer.run(%{ instruction: [:do], enabled: false, value: 10 })
+    %{ instruction: nil, enabled: true, value: 10 }
+
+    iex> NorthPole.Computer.run(%{ instruction: [:"don't"], enabled: true, value: 10 })
+    %{ instruction: nil, enabled: false, value: 10 }
+
+    iex> NorthPole.Computer.run(%{ instruction: [:"don't"], enabled: false, value: 10 })
+    %{ instruction: nil, enabled: false, value: 10 }
+  """
   def run(%{instruction: [:mul, d1, d2], enabled: enabled, value: value}) do
     case enabled do
       true ->
