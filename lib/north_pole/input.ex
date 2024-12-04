@@ -1,5 +1,5 @@
 defmodule Input do
-  def input_to_list(input) do
+  def to_list(input) do
     input
     |> String.split("\n", trim: true)
   end
@@ -17,10 +17,12 @@ defmodule Input do
   def to_tupple_of_tupples(input) do
     input
     |> String.split("\n", trim: true)
-    |> Stream.map(fn line ->
+    |> Enum.map(fn line ->
       String.codepoints(line)
       |> Enum.map(&String.to_atom(&1))
+      |> List.to_tuple()
     end)
+    |> List.to_tuple()
   end
 
   @doc ~S"""
