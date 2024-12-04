@@ -1,4 +1,4 @@
-defmodule NorthPole.InputHelper do
+defmodule Input do
   def input_to_list(input) do
     input
     |> String.split("\n", trim: true)
@@ -14,6 +14,15 @@ defmodule NorthPole.InputHelper do
     |> Enum.map(&convert_item(&1, types))
   end
 
+  def to_tupple_of_tupples(input) do
+    input
+    |> String.split("\n", trim: true)
+    |> Stream.map(fn line ->
+      String.codepoints(line)
+      |> Enum.map(&String.to_atom(&1))
+    end)
+  end
+
   @doc ~S"""
   Given a list of items and a list of types, convert each item to the respective type.
 
@@ -24,7 +33,7 @@ defmodule NorthPole.InputHelper do
 
   """
   def convert_item(item, types \\ []) do
-    [ item, types ]
+    [item, types]
     |> Enum.zip()
     |> Enum.map(fn {value, type} ->
       case type do
