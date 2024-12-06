@@ -4,6 +4,11 @@ defmodule Input do
     |> String.split("\n", trim: true)
   end
 
+  def to_list(input, fun) do
+    to_list(input)
+    |> Enum.map(&fun.(&1))
+  end
+
   def split_items(items, splitter, split_options \\ []) do
     items
     |> Enum.map(&String.split(&1, splitter, split_options))
@@ -37,7 +42,7 @@ defmodule Input do
 
   ## Examples
 
-    iex> NorthPole.InputHelper.convert_item(["1", "2"], [:integer, :integer])
+    iex> Input.convert_item(["1", "2"], [:integer, :integer])
     [1, 2]
 
   """

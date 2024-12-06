@@ -22,32 +22,33 @@ defmodule TaskProcessor do
   """
   def process_items(items, processor_fn, progress_fn \\ fn _ -> :ok end) do
     task_count = length(items)
-    
+
     # Create a named process to track progress
     {:ok, progress_pid} = Agent.start_link(fn -> 0 end, name: :progress_tracker)
 
     try do
       # Start tasks for each item
-      tasks = Enum.map(items, fn item ->
-        Task.async(fn ->
-          try do
-            result = processor_fn.(item)
-            
-            # Update progress
-            Agent.update(:progress_tracker, fn completed ->
-              new_completed = completed + 1
-              progress = floor(new_completed / task_count * 100)
-              progress_fn.(progress)
-              new_completed
-            end)
-            
-            {:ok, result}
-          catch
-            kind, reason ->
-              {:error, {kind, reason, __STACKTRACE__}}
-          end
+      tasks =
+        Enum.map(items, fn item ->
+          Task.async(fn ->
+            try do
+              result = processor_fn.(item)
+
+              # Update progress
+              Agent.update(:progress_tracker, fn completed ->
+                new_completed = completed + 1
+                progress = floor(new_completed / task_count * 100)
+                progress_fn.(progress)
+                new_completed
+              end)
+
+              {:ok, result}
+            catch
+              kind, reason ->
+                {:error, {kind, reason, __STACKTRACE__}}
+            end
+          end)
         end)
-      end)
 
       # Await all tasks with a timeout
       Task.await_many(tasks, :infinity)
@@ -72,29 +73,30 @@ defmodule TaskProcessor do
   """
   def process_items_supervised(items, processor_fn, progress_fn \\ fn _ -> :ok end) do
     task_count = length(items)
-    
+
     {:ok, progress_pid} = Agent.start_link(fn -> 0 end)
 
     try do
-      tasks = Enum.map(items, fn item ->
-        Task.Supervisor.async(TaskProcessor.TaskSupervisor, fn ->
-          try do
-            result = processor_fn.(item)
-            
-            Agent.update(progress_pid, fn completed ->
-              new_completed = completed + 1
-              progress = floor(new_completed / task_count * 100)
-              progress_fn.(progress)
-              new_completed
-            end)
-            
-            {:ok, result}
-          catch
-            kind, reason ->
-              {:error, {kind, reason, __STACKTRACE__}}
-          end
+      tasks =
+        Enum.map(items, fn item ->
+          Task.Supervisor.async(TaskProcessor.TaskSupervisor, fn ->
+            try do
+              result = processor_fn.(item)
+
+              Agent.update(progress_pid, fn completed ->
+                new_completed = completed + 1
+                progress = floor(new_completed / task_count * 100)
+                progress_fn.(progress)
+                new_completed
+              end)
+
+              {:ok, result}
+            catch
+              kind, reason ->
+                {:error, {kind, reason, __STACKTRACE__}}
+            end
+          end)
         end)
-      end)
 
       Task.await_many(tasks, :infinity)
     after
@@ -113,7 +115,7 @@ defmodule TaskProcessor do
   """
   def process_items_chunked(items, processor_fn, chunk_size, progress_fn \\ fn _ -> :ok end) do
     total_items = length(items)
-    
+
     {:ok, progress_pid} = Agent.start_link(fn -> 0 end)
 
     try do
@@ -121,25 +123,26 @@ defmodule TaskProcessor do
       |> Stream.chunk_every(chunk_size)
       |> Enum.flat_map(fn chunk ->
         # Process each chunk of items
-        tasks = Enum.map(chunk, fn item ->
-          Task.async(fn ->
-            try do
-              result = processor_fn.(item)
-              
-              Agent.update(progress_pid, fn completed ->
-                new_completed = completed + 1
-                progress = floor(new_completed / total_items * 100)
-                progress_fn.(progress)
-                new_completed
-              end)
-              
-              {:ok, result}
-            catch
-              kind, reason ->
-                {:error, {kind, reason, __STACKTRACE__}}
-            end
+        tasks =
+          Enum.map(chunk, fn item ->
+            Task.async(fn ->
+              try do
+                result = processor_fn.(item)
+
+                Agent.update(progress_pid, fn completed ->
+                  new_completed = completed + 1
+                  progress = floor(new_completed / total_items * 100)
+                  progress_fn.(progress)
+                  new_completed
+                end)
+
+                {:ok, result}
+              catch
+                kind, reason ->
+                  {:error, {kind, reason, __STACKTRACE__}}
+              end
+            end)
           end)
-        end)
 
         Task.await_many(tasks, :infinity)
       end)

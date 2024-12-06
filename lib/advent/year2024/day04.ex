@@ -4,7 +4,7 @@ defmodule Advent.Year2024.Day04 do
 
     0..7
     |> Enum.to_list()
-    |> TaskProcessor.process_items(fn rotation -> 
+    |> TaskProcessor.process_items(fn rotation ->
       Plane.rotate(plane, rotation, fn string ->
         Regex.scan(~r/XMAS/, string)
         |> Enum.count()
