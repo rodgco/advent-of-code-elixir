@@ -3,14 +3,15 @@ defmodule Advent.Year2024.Day04 do
     plane = get_plane(input)
 
     0..7
-    |> Enum.reduce(0, fn rotation, acc ->
-      count =
-        Plane.rotate(plane, rotation, fn string ->
-          Regex.scan(~r/XMAS/, string)
-          |> Enum.count()
-        end)
-        |> Enum.sum()
-
+    |> Enum.to_list()
+    |> TaskProcessor.process_items(fn rotation -> 
+      Plane.rotate(plane, rotation, fn string ->
+        Regex.scan(~r/XMAS/, string)
+        |> Enum.count()
+      end)
+      |> Enum.sum()
+    end)
+    |> Enum.reduce(0, fn {:ok, count}, acc ->
       acc + count
     end)
   end
